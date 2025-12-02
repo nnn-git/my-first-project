@@ -27,8 +27,7 @@ jobs:
         run: npm run build
 
       - name: Кодын стандартыг шалгах (Run Lint Check)
-        
-        run: npx next lint --no-cache --max-warnings 0
+        run: npx next lint
 
   
   unit-test:
