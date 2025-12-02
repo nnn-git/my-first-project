@@ -15,9 +15,9 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-24">
+    <div className="flex min-h-screen flex-col items-center justify-center p-24 bg-gray-100">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex flex-col">
-        <h1 className="text-4xl mb-8 font-bold">Нэвтрэх</h1>
+        <h1 className="text-4xl mb-8 font-bold text-gray-700">Нэвтрэх</h1>
         
         <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-96 text-black">
           <div className="mb-4">
