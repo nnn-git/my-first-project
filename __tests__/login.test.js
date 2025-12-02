@@ -3,7 +3,6 @@ import Login from '@/app/login/page';
 import '@testing-library/jest-dom';
 
 describe('US-5: Login Page', () => {
-  // 1. Форм зөв харагдаж байгаа эсэхийг шалгах
   it('renders login inputs and button', () => {
     render(<Login />);
 
@@ -16,7 +15,7 @@ describe('US-5: Login Page', () => {
     expect(button).toBeInTheDocument();
   });
 
-  // 2. Хэрэглэгч юм бичихэд утга нь өөрчлөгдөж байгаа эсэхийг шалгах
+  
   it('updates input values on change', () => {
     render(<Login />);
     
