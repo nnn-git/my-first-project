@@ -1,64 +1,63 @@
-# .github/workflows/ci.yml
 name: Next.js CI Pipeline (Automated Testing for Solo Dev)
 
 on:
-  # Код push хийгдэх эсвэл Pull Request үүсгэгдэх үед ажиллана.
+  
   push:
-    branches: [ main, develop, feature/* ]
+    branches: [main, develop, feature/*]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
-  # 1. Төслийн үндсэн шалгалт (Install, Build, Lint)
+  
   build-and-lint:
     runs-on: ubuntu-latest
-    # Шинэ Тохиргоо: Бүх run командуудыг төслийн үндсэн хавтас дээр ажиллуулахыг баталгаажуулна.
+    
     defaults:
       run:
         working-directory: .
     steps:
-      - name: 🔍 Кодыг татаж авах (Checkout Repository)
+      - name: Кодыг татаж авах (Checkout Repository)
         uses: actions/checkout@v4
 
-      - name: 🟢 Node.js-ийг тохируулах (Setup Node.js)
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm' 
-
-      - name: 📦 Dependencies-г суулгах (Install Dependencies)
-        run: npm install
-
-      - name: ⚙️ Next.js төслийг Build хийж шалгах (Check Build)
-        # Одоо working-directory-г давхар заах шаардлагагүй.
-        run: npx next build
-
-      - name: 🧹 Кодын стандартыг шалгах (Run Lint Check)
-        # Одоо working-directory-г давхар заах шаардлагагүй.
-        run: npx next lint
-
-  # 2. Нэгж Туршилт (Unit Testing)
-  unit-test:
-    needs: build-and-lint
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: 🔍 Кодыг татаж авах (Checkout Repository)
-        uses: actions/checkout@v4
-
-      - name: 🟢 Node.js-ийг тохируулах (Setup Node.js)
+      - name: Node.js-ийг тохируулах (Setup Node.js)
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      - name: 📦 Dependencies-г суулгах (Install Dependencies)
+      - name: Dependencies-г суулгах (Install Dependencies)
         run: npm install
 
-      - name: 🧪 Нэгж туршилтыг ажиллуулах (Run Jest Tests)
-        run: npm test -- --coverage
+      - name: ⚙️ Next.js төслийг Build хийж шалгах (Check Build)
         
-      - name: 📈 Кодын хамралтын тайланг хуулах (Upload Coverage Report)
+        run: npx next build .
+
+      - name: 🧹 Кодын стандартыг шалгах (Run Lint Check)
+        
+        run: npx next lint .
+
+  
+  unit-test:
+    needs: build-and-lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Кодыг татаж авах (Checkout Repository)
+        uses: actions/checkout@v4
+
+      - name: Node.js-ийг тохируулах (Setup Node.js)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Dependencies-г суулгах (Install Dependencies)
+        run: npm install
+
+      - name: Нэгж туршилтыг ажиллуулах (Run Jest Tests)
+        run: npm test -- --coverage
+
+      - name: Кодын хамралтын тайланг хуулах (Upload Coverage Report)
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -66,33 +65,33 @@ jobs:
           path: coverage/
           retention-days: 5
 
-  # 3. Туршилт амжилтгүй болсон үед ганц хүнд мэдэгдэл илгээх Job
+ 
   notify-on-failure:
     runs-on: ubuntu-latest
     needs: unit-test
-    
+
     if: failure() && github.event_name == 'pull_request'
 
     steps:
-      - name: 📧 Туршилт амжилтгүй болсон тухай хувийн мэйл илгээх
+      - name: Туршилт амжилтгүй болсон тухай хувийн мэйл илгээх
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
           server_port: 465
-          username: ${{ secrets.EMAIL_USERNAME }} 
+          username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          
-          to: ${{ secrets.PERSONAL_EMAIL }} 
+
+          to: ${{ secrets.PERSONAL_EMAIL }}
           from: CI/CD System <${{ secrets.EMAIL_USERNAME }}>
           subject: "CI/CD: ТАНЫ ТУРШИЛТ АМЖИЛТГҮЙ БОЛЛОО!"
           body: |
             Сайн байна уу, Хөгжүүлэгч,
 
             Таны сүүлд оруулсан кодны өөрчлөлт (PR # ${{ github.event.pull_request.number }}) нэгж туршилтад унасан байна.
-            
+
             **Салбар (Branch):** ${{ github.ref }}
             **PR Гарчиг:** ${{ github.event.pull_request.title }}
-            
+
             Асуудлыг GitHub Actions дээр шалгах: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            
+
             Амжилт хүсье!
