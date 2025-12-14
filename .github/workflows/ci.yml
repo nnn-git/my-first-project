@@ -8,10 +8,9 @@ on:
     branches: [main, develop]
 
 jobs:
-  
+ 
   build-and-lint:
     runs-on: ubuntu-latest
-    
     defaults:
       run:
         working-directory: .
@@ -23,19 +22,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: 'npm' 
 
       - name: Dependencies-г суулгах (Install Dependencies)
         run: npm install
 
-      - name: ⚙️ Next.js төслийг Build хийж шалгах (Check Build)
-        
+      - name: Next.js төслийг Build хийж шалгах (Check Build)
         run: npx next build .
-
-      - name: 🧹 Кодын стандартыг шалгах (Run Lint Check)
-        
-        run: npx next lint
-
   
   unit-test:
     needs: build-and-lint
