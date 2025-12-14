@@ -34,7 +34,7 @@ jobs:
 
       - name: 🧹 Кодын стандартыг шалгах (Run Lint Check)
         
-        run: npx next lint .
+        run: npx next lint
 
   
   unit-test:
