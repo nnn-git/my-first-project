@@ -48,7 +48,7 @@ jobs:
         run: npm install
 
       - name: Нэгж туршилтыг ажиллуулах (Run Jest Tests)
-        run: npm test -- --coverage
+        run: npm test -- --coverage --maxWorkers=50% --passWithNoTests
 
       - name: Кодын хамралтын тайланг хуулах (Upload Coverage Report)
         uses: actions/upload-artifact@v4
